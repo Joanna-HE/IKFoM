@@ -870,10 +870,10 @@ public:
 				}
 			}
 
-			Matrix<scalar_type, n, Eigen::Dynamic> K_;
+			Matrix<scalar_type, Eigen::Dynamic, Eigen::Dynamic> K_;
 			if(n > dof_Measurement)
 			{
-			#ifdef USE_sparse
+				#ifdef USE_sparse
 				Matrix<scalar_type, Eigen::Dynamic, Eigen::Dynamic> K_temp = h_x_ * P_ * h_x_.transpose();
 				spMt R_temp = h_v_ * R_ * h_v_.transpose();
 				K_temp += R_temp;
@@ -1010,14 +1010,14 @@ public:
 		{
 			dyn_share.valid = true;
 			Matrix<scalar_type, Eigen::Dynamic, 1> h = h_dyn_share (x_,  dyn_share);
-			Matrix<scalar_type, Eigen::Dynamic, 1> z = dyn_share.z;
+			Matrix<scalar_type, Eigen::Dynamic, Eigen::Dynamic> z = dyn_share.z;
 		#ifdef USE_sparse
 			spMt h_x = dyn_share.h_x.sparseView();
 			spMt h_v = dyn_share.h_v.sparseView();
 			spMt R_ = dyn_share.R.sparseView();
 		#else
 			Matrix<scalar_type, Eigen::Dynamic, Eigen::Dynamic> R = dyn_share.R; 
-			Matrix<scalar_type, Eigen::Dynamic, n> h_x = dyn_share.h_x;
+			Matrix<scalar_type, Eigen::Dynamic, Eigen::Dynamic> h_x = dyn_share.h_x;
 			Matrix<scalar_type, Eigen::Dynamic, Eigen::Dynamic> h_v = dyn_share.h_v;
 		#endif	
 			dof_Measurement = h_x.rows();
@@ -1073,7 +1073,7 @@ public:
 				}
 			}
 
-			Matrix<scalar_type, n, Eigen::Dynamic> K_;
+			Matrix<scalar_type, Eigen::Dynamic, Eigen::Dynamic> K_;
 			if(n > dof_Measurement)
 			{
 			#ifdef USE_sparse
@@ -1276,7 +1276,7 @@ public:
 				}
 			}
 
-			Matrix<scalar_type, n, Eigen::Dynamic> K_;
+			Matrix<scalar_type, Eigen::Dynamic, Eigen::Dynamic> K_;
 			if(n > dof_Measurement)
 			{
 			#ifdef USE_sparse
@@ -1428,8 +1428,8 @@ public:
 			spMt R_ = dyn_share.R.sparseView();
 		#else
 			Matrix<scalar_type, Eigen::Dynamic, Eigen::Dynamic> R = dyn_share.R; 
-			Matrix<scalar_type, measurement_runtime::DOF, n> h_x = dyn_share.h_x;
-			Matrix<scalar_type, measurement_runtime::DOF, Eigen::Dynamic> h_v = dyn_share.h_v;
+			Matrix<scalar_type, Eigen::Dynamic, Eigen::Dynamic> h_x = dyn_share.h_x;
+			Matrix<scalar_type, Eigen::Dynamic, Eigen::Dynamic> h_v = dyn_share.h_v;
 		#endif	
 			dof_Measurement = measurement_runtime::DOF;
 			dof_Measurement_noise = dyn_share.R.rows();
@@ -1484,11 +1484,11 @@ public:
 				}
 			}
 
-			Matrix<scalar_type, n, measurement_runtime::DOF> K_;
+			Matrix<scalar_type, Eigen::Dynamic, Eigen::Dynamic> K_;
 			if(n > dof_Measurement)
 			{
 			#ifdef USE_sparse
-				Matrix<scalar_type, measurement_runtime::DOF, measurement_runtime::DOF> K_temp = h_x * P_ * h_x.transpose();
+				Matrix<scalar_type, Eigen::Dynamic, Eigen::Dynamic> K_temp = h_x * P_ * h_x.transpose();
 				spMt R_temp = h_v * R_ * h_v.transpose();
 				K_temp += R_temp;
 				K_ = P_ * h_x.transpose() * K_temp.inverse();
@@ -1713,7 +1713,7 @@ public:
 			if(t > 1 || i == maximum_iter - 1)
 			{
 				L_ = P_;
-				std::cout << "iteration time" << t << "," << i << std::endl; 
+				//std::cout << "iteration time" << t << "," << i << std::endl; 
 				Matrix<scalar_type, 3, 3> res_temp_SO3;
 				MTK::vect<3, scalar_type> seg_SO3;
 				for(typename std::vector<std::pair<int, int> >::iterator it = x_.SO3_state.begin(); it != x_.SO3_state.end(); it++) {
